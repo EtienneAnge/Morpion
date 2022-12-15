@@ -1,5 +1,7 @@
 #include <stdio.h>
-
+#include <time.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 
 //vérifie si un des deux joueur a gagné
@@ -14,7 +16,7 @@ char end(char tab[3][3]){
 		}
 
 		//colone et ligne
-		for(int i=0; 0<3; i++){
+		for(int i=0; i<3; i++){
 			if(tab[i][0]==symb && tab[i][1]==symb && tab[i][2]==symb){
 				return symb;
 			}
@@ -33,32 +35,49 @@ char end(char tab[3][3]){
 			}
 		}
 	}
-	return '_';
+	return ' ';
 }
 
 //affiche la grille
 void grille(char tab[3][3]){
-	for(int i = 0; i<=2; i++){
+	for(int i = 0; i<3; i++){
 		printf("\n%c|%c|%c", tab[i][0],tab[i][1], tab[i][2]);
 	}
 }
 
 	
+	
+	
 int main(int argc, char **argv) {
+	srand(time(NULL));
+	
 	//mets '_' dans le tableau tab
 	char tab[3][3];
-	for(int i=0; i<3; i++){
-		for(int j=0; j<3; j++){
-			tab[i][j] = '_';
+	for(int m=0; m<3; m++){
+		for(int n=0; n<3; n++){
+			tab[m][n] = ' ';
 		}
 	}
 	int turn = 0;
-	int i, j;
+	int i;
+	int j;
 	int whowin;
 	char player;
+	
+	printf("[0] 1 vs 1\n[1] 1 vs IA\n");
 
+	int mode;
+	scanf("%d", &mode);
+	
+	while(mode!=0 && mode!=1){
+		system("clear"); 
+		printf("saisit incorrect\n[0] 1 vs 1\n[1] 1 vs IA\n");
+		}
+	
+	
 	//boucle de la partie du jeu
 	do{
+		system("clear"); 
 		grille(tab);
 
 		//vérifie a qui le tour
@@ -71,27 +90,44 @@ int main(int argc, char **argv) {
 		
 		//fait jouer le joueur
 		do{
-			printf("\nAu %c de jouer\nligne: ", player);
-			scanf("%d", &i);
-			printf("colonne: ");
-			scanf("%d", &j);
+			if(mode==0 || turn%2==0){
+				printf("\nAu %c de jouer\nligne: ", player);
+				scanf("%d", &i);
+				printf("colonne: ");
+				scanf("%d", &j);
+				i = i-1;
+				j = j-1;
+			}else{
+				 do{
+					i = rand() % 3;
+					j = rand() % 3;
 
-			if(tab[i-1][j-1] != '_'){
-				printf("case incorrecte !");
+				}while(tab[i][j]!=' ');
+				
+				printf("\nCalcul en cours...");
+				sleep(1);
 			}
-		}while(tab[i-1][j-1] != '_');
-		tab[i-1][j-1] = player;
+			
+			if(tab[i][j] != ' '){
+				system("clear"); 
+				grille(tab);
+				printf("\ncase incorrecte !");
+			}
+		}while(tab[i][j] != ' ');
 		
+		tab[i][j] = player;
 		
-		whowin = end(tab);
 		turn = turn + 1;
-	}while(whowin=='_');
-
+		whowin = end(tab);
+	}while(whowin==' ');
+	system("clear");
+	grille(tab);
+	
 	//dit qui a gagné
 	if(whowin=='X'){
-		printf("\nX à gagné");
+		printf("\nX à gagné\n");
 	}else{
-		printf("\nO à gagné");
+		printf("\nO à gagné\n");
 	}
 	
 	
